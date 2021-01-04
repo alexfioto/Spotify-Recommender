@@ -28,83 +28,14 @@ Can we improve upon Spotify's base recommendations by directly comparing recomme
 
 ## Executive Summary
 
-Alexaurus Recs is an app that includes a suite of recommendation engines to hopes to improve upon Spotify's base recommendations. The app uses a Flask web-app framework and is deployed on heroku. See the source code [here](./App Source Code)
+Alexaurus Recs is an app that includes a suite of recommendation engines to hopes to improve upon Spotify's base recommendations and users visualize their personal data collected by Spotify. The app uses a Flask web-app framework and is deployed on heroku. See the source code [here](https://github.com/alexfioto/Spotify-Recommender/tree/main/App%20Source%20Code).
 
 
-## Overview
-
-- Importing libraries
-- Testing PushShift API and automating
-- Initial data inspection
-- Data cleaning
-- Text Preprocessing and EDA
-- Feature creation and selection
-- Basic Naive-bayes classification model aided by grid searching
-- Basic Random Forest classification model aided by grid searching
-- Conclusions and recommendations
- 
-
-### Notebook 3.1 Web Scraping
-
-First import the necessary libraries: 
- - requests: web scraping
- - numpy: scientific computing
- - pandas: data analysis
- - time: automation
- 
-First, I test the pulling data from reddit using PushShift's API. After reviewing the process, a function is created to automate web scraping and data frame creating for each subreddit. I will collect 10,000 datapoints from each subreddit resulting in final data frame of 20,000 rows.
-
-After data collection, I concatenated and cleaned the data. Lastly, I created one feature labeled, `all_text` that includes all of the text from `title` and `self_text`.
 
 
-### Notebook 3.2 Text Preprocessing and EDA
 
-- nltk: natural language processing
-- matplotlib: data visualization
-- sklearn: word vectorization
 
-First, I create two functions: one that lemmatizes text and another that will stem text. Next, I create two new columns in my dataframe: one is `all_text` lemmatized and another is `all_text` stemmed. 
 
-Next, I investigate words that are common in both subreddits. Words that are found in both subreddits frequently are added to a list of potential stop words. I found that excluding these words hurt model performance.
- 
-
-### Notebook 3.3 Naive Bayes Classification Model
-
-- pandas: data analysis
-- matplotlib: data visualization
-- yellowbrick: data visualization
-- sklearn: machine learning
-
-Created X, explanatory variables, and y, target variable. 
-
-First, I instantiated, fit, scored and visualized a basic Naive-Bayes Classifier. I found that it did a decent job at classifying the two subreddits out of the gate. I used scikit-learn's grid search to search for the best hyperparameters. 
-
-Ultimately, I found that an alpha of 250 and 'english' stopwords in a TfidfVectorizer produced the best accuracy score of around 82%.
-
-The notebook includes more details of my findings and visualizations.
-
-### Notebook 3.4 Random Forest Classifier
-
-- pandas: data analysis
-- matplotlib: data visualization
-- yellowbrick: data visualization
-- sklearn: machine learning
-
-This notebook follows the same process outlined in notebook 3.3 using a Random Forest Classifier. 
-
-The Random Forest Classifier takes a quite a long time to grid search and I am continuously updating and improving my model. Currently, my best search is: 
-
-{'randomforestclassifier__criterion': 'entropy',
- 'randomforestclassifier__n_estimators': 150,
- 'tfidfvectorizer__max_features': 9000,
- 'tfidfvectorizer__min_df': 1,
- 'tfidfvectorizer__ngram_range': (1, 1),
- 'tfidfvectorizer__stop_words': 'english'}
-
-This grid search resulted a test accuracy of 85%
-
-The bottom of the notebook includes some of my attempts at other classifier models.
- 
 ## Conclusion
 
 Accuracy will be used as the metric to determine best model since this project simply aims to correctly classify subreddits rather than optimize for precision or recall. 
