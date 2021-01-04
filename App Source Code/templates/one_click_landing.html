@@ -1,0 +1,14 @@
+{% extends "index.html" %}
+{% block title%}One-Click Recs{% endblock%}
+{% block content %}
+<br>
+<h1 class="text-center">One-Click Recs</h1>
+<br>
+<div class="d-grid gap-2 col-3 mx-auto">
+    <a class="btn btn-primary btn-lg" href="/one_click" role="button">Create Playlist</a>
+</div>
+<br><br>
+<img class="rounded mx-auto d-block" src={{url_for('static', filename='peter.gif')}}>
+
+
+    {% endblock %}

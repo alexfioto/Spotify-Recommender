@@ -1,0 +1,29 @@
+{% extends "index.html" %}
+{% block title%}Top Tracks{% endblock%}
+{% block content %}
+
+
+<table class="table table-hover">
+    <thead>
+      <tr>
+        <th scope='col'>#</th>
+        {% for column in df.columns %}
+        <th scope="col">{{ column.replace('_', ' ').title() }}</th>
+        {% endfor %}
+
+      </tr>
+    </thead>
+    <tbody>
+      {% for key, value in df.iterrows() %}
+      <tr>
+        <th scope="row">{{ key }}</th>
+        <td>{{ value['track_name'] }}</td>
+        <td>{{ value['artist_name'] }}</td>
+        <td>{{ value['time_range'].replace('_', ' ').title() }}</td>
+      </tr>
+      {% endfor%}
+   
+    </tbody>
+  </table>
+
+    {% endblock %}

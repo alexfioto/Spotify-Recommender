@@ -1,0 +1,27 @@
+{% extends "index.html" %}
+{% block title%}Playlist Created{% endblock%}
+{% block content %}
+
+
+<figure class="text-center">
+    <blockquote class="blockquote">
+      <br>
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <strong>Awesome!</strong> You just created a playlist <a href="https://open.spotify.com/embed/playlist/3rLzTlw4qv08BliOj6nBbP" target="_blank" class="alert-link">Click here</a> to view in the Spotify browser
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+      <h1>Your playlist is called</h1>
+      <h2> "{{playlist_name}}"</h2>
+      <br>    
+      <p>It's saved to your Spotify account but feel free to listen here.</p> 
+      <br>
+    </blockquote>
+    <iframe src="{{ url }}" width="300" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+    <p>
+        <br>
+        <h4>I hope you like the songs!</h4>
+    </p>
+
+</figure>
+
+    {% endblock %}

@@ -1,0 +1,13 @@
+{% extends "index.html" %}
+{% block title%}Playlists{% endblock%}
+{% block content %}
+
+<p>
+    <br>
+    Here are your current playlists.
+    <br>
+</p>
+{% for item in embed_links %}
+     <iframe src="{{ item }}" width="300" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+{% endfor %}
+    {% endblock %}

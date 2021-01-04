@@ -1,0 +1,109 @@
+{% extends "index.html" %}
+{% block title%}Favorite Song Recs{% endblock%}
+{% block content %}
+
+<figure class="text-center">
+  <br>
+  <div class="alert alert-warning alert-dismissible fade show" role="alert">
+      <strong>Warning!</strong> If you get an Internal Server Error, please hit the back button and try again with different parameters. This is still a work in progress and I appreciate any and all <a href="mailto:afioto@icloud.com">feedback</a>!
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+<h1>Favorite Song Recs</h1>
+<br>
+
+<!--
+<div class="accordion" style="width: 25rem; margin:0 auto;" id="accordionExample">
+  <div class="accordion-item">
+    <h2 class="accordion-header" id="headingOne">
+      <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+        Spotify Song Link
+      </button>
+    </h2>
+    <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+      <div class="accordion-body">
+        <strong>Input a Spotify Song Link</strong> Navigate to the Spotify desktop app or mobile app. Locate a song you enjoy. Your playlist will be created based on this song! Right click the song name or click the "..." button. A menu will open. Towards the bottom of the menu, hover over the "Share" option. Click on "Copy Song Link". Paste that link here! Alternatively, I am developing a search feature on this website. Check back soon!
+      </div>
+    </div>
+  </div>
+  <div class="accordion-item">
+    <h2 class="accordion-header" id="headingTwo">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+        Music Genre
+      </button>
+    </h2>
+    <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
+      <div class="accordion-body">
+        <strong>Choose a genre you would like your playlist to be based on</strong> This is optional. If you don't care about the genre and are just looking for some new tunes, leave this option blank.
+      </div>
+    </div>
+  </div>
+  <div class="accordion-item">
+    <h2 class="accordion-header" id="headingThree">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+        Listening Time Range
+      </button>
+    </h2>
+    <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
+      <div class="accordion-body">
+        <strong>Choose your user history listening time range</strong> Spotify tracks the songs you like and listen to the most. If you select one of these options, this recommender will base songs off of your taste. If you leave blank, it will not be based off of your personal taste. 
+      </div>
+    </div>
+  </div>
+</div>
+<br><br>
+-->
+
+</figure>
+
+<form action='/song_based_submit'>
+    <div class="mb-3" style="width: 25rem; margin:0 auto;">
+        <label for="link" class="form-label">Spotify Song Link    |   
+          <a href='/spotify_code_search'> What's this? 👀</a>
+         </label>
+        <input type="text" class="form-control" name="link" placeholder="Paste code or link here" aria-describedby="emailHelp">
+    </div>
+    <div class="mb-3" style="width: 25rem; margin:0 auto;">
+        <label for="playlist_name" class="form-label">Name Your Playlist</label>
+        <input type="text" class="form-control" name="playlist_name" placeholder="Dino-Mite!">
+    </div>
+    <div class='mb-3' style="width: 25rem; margin:0 auto;">
+        <label for="n_tracks" class="form-label">Select Number of Songs</label>
+        <select name="n_tracks" class="form-select" aria-label="Default select example">
+            {% for number in range(1, 101) %}
+            <option value="{{ number }}">{{ number }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="mb-3" style="width: 25rem; margin:0 auto;">
+        <label for="selected_genre" class="form-label">Choose a Music Genre</label>
+        <select name="selected_genre" class="form-select" aria-label="Default select example">
+            <option value= "" selected>Don't Care</option>
+            {% for genre in genre_seeds %}
+            <option value="{{ genre }}">{{ genre }}</option>
+            {% endfor %}
+        </select>
+        <!--Eventually I want  multiselect but the Flask I cannot figure out Flask retrieval.
+            
+            <select multiple="multiple" name="selected_genres" id="selected_genres" class="form-select" size=3 aria-label="multiple select genre">
+            <option selected>Open this select menu</option>
+            {% for genre in genre_seeds %}
+            <option value="{{ genre }}">{{ genre }}</option>
+            {% endfor %}
+        </select>-->
+    </div>
+    <div class="mb-3" style="width: 25rem; margin:0 auto;">
+        <label for="time_range" class="form-label">Your listening history</label>
+        <select name="time_range" class="form-select" aria-label="Default select example">
+            <option value="" selected>Don't use my listening history</option>
+            <option value="short_term">What I've been listening to lately</option>
+            <option value="medium_term">What I've been listening to the past few months</option>
+            <option value="long_term">My favorite songs of all time</option>
+        </select>
+    </div>
+    <br>
+    <div class='text-center'>
+    <button type="submit" class="btn btn-primary">Submit</button>
+    </div>
+</form>
+
+    {% endblock %}

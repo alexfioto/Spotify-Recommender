@@ -1,0 +1,77 @@
+{% extends "index.html" %}
+{% block title%}Explore a New Artist{% endblock%}
+{% block content %}
+
+<br>
+  <div class="alert alert-warning alert-dismissible fade show" role="alert">
+      <strong>Wait time ~12 seconds!</strong> This recommender is grabbing a bunch of data! If you get an <strong>Internal Server Error</strong>, please hit the back button and try again with a different listening history and number of songs selected. This is still a work in progress and I appreciate any and all <a href="mailto:afioto@icloud.com">feedback</a>!
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+<h1 class='text-center'>Explore a New Artist</h1>
+<br>
+<!--
+<div class="accordion" style="width: 25rem; margin:0 auto;" id="accordionExample">
+  <div class="accordion-item">
+    <h2 class="accordion-header" id="headingOne">
+      <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+        Spotify Artist Link
+      </button>
+    </h2>
+    <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+      <div class="accordion-body">
+        <strong>Input a Spotify Artist Link</strong> Navigate to the Spotify desktop app or mobile app. Locate an artist you enjoy. Your playlist will consist of songs of the artist and curated based on your taste! Right click the artist name or click the "..." button. A menu will open. Towards the bottom of the menu, hover over the "Share" option. Click on "Copy Artist Link". Paste that link here! Alternatively, I am developing a search Spotify link feature on this website. Check back soon!
+      </div>
+    </div>
+  </div>
+  <div class="accordion-item">
+    <h2 class="accordion-header" id="headingThree">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+        Listening Time Range
+      </button>
+    </h2>
+    <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
+      <div class="accordion-body">
+        <strong>Choose your user listening.</strong> Spotify tracks the songs you like and listen to the most. If you select one of these options, this recommender will base songs off of your taste. If you leave blank, it will not be based off of your personal taste. 
+      </div>
+    </div>
+  </div>
+</div>
+-->
+
+<form action='/artist_based_submit'>
+    <div class="mb-3" style="width: 25rem; margin:0 auto;">
+      <label for="link" class="form-label">Spotify Artist Link    |   
+        <a href='/spotify_code_search'> What's this? 👀</a>
+       </label>
+        <input type="text" class="form-control" name="link" placeholder="Paste code or link here" aria-describedby="artist link">
+    </div>
+    <div class="mb-3" style="width: 25rem; margin:0 auto;">
+        <label for="playlist_name" class="form-label">Name Your Playlist</label>
+        <input type="text" class="form-control" name="playlist_name" placeholder="Best Playlist Ever">
+    </div>
+    <div class="mb-3" style="width: 25rem; margin:0 auto;">
+
+        <label for="n_tracks" class="form-label">Select Number of Songs</label>
+        <select name="n_tracks" class="form-select" aria-label="Default select example">
+            {% for number in range(1, 101) %}
+            <option value="{{ number }}">{{ number }}</option>
+            {% endfor %}
+        </select>
+     </div>
+     <div class="mb-3" style="width: 25rem; margin:0 auto;">
+        <label for="time_range" class="form-label">Your Listening History</label>
+        <select name="time_range" class="form-select" aria-label="Default select example">
+            <option value="short_term">What I've been listening to lately</option>
+            <option value="medium_term">What I've been listening to the past few months</option>
+            <option value="long_term">My favorite songs of all time</option>
+        </select>
+      </div>
+        <br>
+        <div class = 'text-center'>
+        <button type="submit" class="btn btn-primary button-center">Submit</button>
+      </div>
+    </div>
+    <br>
+</form>
+    
+    {% endblock %}

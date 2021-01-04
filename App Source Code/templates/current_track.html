@@ -1,0 +1,13 @@
+{% extends "index.html" %}
+{% block title%}Current Track{% endblock%}
+{% block content %}
+<figure class="text-center">
+    <p>
+        <h1>{{res}}</h1>
+        <br>
+    </p>
+    <img src="{{ art_url }}" alt="Album Art">
+</figure>
+
+<!--<iframe src={{link}} width="300" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe> -->
+    {% endblock %}

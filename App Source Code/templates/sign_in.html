@@ -1,0 +1,24 @@
+    {% extends "index.html" %}
+
+    {% block title %}Alexaurus Recs Sign-in{% endblock %}
+    {% block content %}
+    
+    <figure class="text-center">
+    
+      <blockquote class="blockquote">
+        <p>
+          <img src={{url_for('static', filename='icons8-musical-notes-100.png')}} height='75' width='75'>
+  
+            <h1>Welcome to Alexaurus Recs!
+            </h1>
+        </p>
+      </blockquote>
+      <p><h4>Don't always like Spotify's recommendations? Me either!</h4></p>
+      <p>Let's connect and find some groovy tunes.</p>
+  
+      <a href={{auth_url}}>
+          <img alt="Spotify Login Button" src={{url_for('static', filename='image-asset.jpg')}} height='60' width='325'>
+      </a>
+    </figure>
+    
+    {% endblock %}

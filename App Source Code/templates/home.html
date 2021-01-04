@@ -1,0 +1,77 @@
+{% extends "index.html" %}
+{% block title%}Alexaurus Recs Home{% endblock%}
+{% block content %}
+
+
+<figure class="text-center">
+    <blockquote class="blockquote">
+      <br>
+      <h1>Hi {{spotify.me()["display_name"]}}!</h1> 
+    </blockquote>
+</figure>
+
+<div class="accordion" style="width: 25rem; margin:0 auto;" id="accordionExample">
+  <div class="accordion-item">
+    
+  <div class="accordion-item">
+    <h2 class="accordion-header" id="headingOne">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+        About Alexaurus
+      </button>
+    </h2>
+    <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingFour" data-bs-parent="#accordionExample">
+      <div class="accordion-body">
+        <strong>Hi! I'm Alex Fioto, Data Scientist and Professional Musician.</strong><br><br>I created this app to find better song recommendations on Spotify. This site was created using a Flask framework and deployed on Heroku. I'm using Pandas and scikit-learn maching learning library on the backend to help find rockin' jams. A big thanks to Spotify for a stellar API and to SpotiPY for creating a wonderful python wrapper. Check out my <a href='https://github.com/alexfioto/Spotify-Recommender' target='_blank'>GitHub Repo</a> for more information!
+      </div>
+    </div>
+  </div>
+  <div class="accordion-item">
+    <h2 class="accordion-header" id="headingTwo">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+        One-Click Recs
+      </button>
+    </h2>
+    <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
+      <div class="accordion-body">
+        <strong>Generate a playlist with one click!</strong> <br><br>This One-Click Recommender will create a playlist based on what you've been listening to on Spotify.<br><br><a href='/one_click_landing'>Try it!</a>
+      </div>
+    </div>
+  </div>
+  
+  <div class="accordion-item">
+    <h2 class="accordion-header" id="headingThree">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+        Favorite Song Recs
+      </button>
+    </h2>
+    <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
+      <div class="accordion-body">
+        <strong>Pick a song and generate a personalized playlist!</strong><br><br>Have you ever found a song you really like and want to hear more just like it? This recommender will find similar songs and compare them to top songs in your listening history. A playlist will be created consisting of the top matches.<br><br><a href="/song_based">Try it!</a>
+      </div>
+    </div>
+  </div>
+  <div class="accordion-item">
+    <h2 class="accordion-header" id="headingFour">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+        Explore a New Artist 
+      </button>
+    </h2>
+    <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#accordionExample">
+      <div class="accordion-body">
+        <strong>Choose an artist and generate a playlist of their songs that match your taste!</strong><br><br>"Hey, you should check out this cool new band called Dinosaur Pile-Up!" I get this a lot from friends and family. It's difficult to know where to start. This recommender will pull all tracks from a given artist and compare them to top tracks in your listening history. A playlist will be created with songs that match your taste.<br><br><a href="/artist_based">Try it!</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Old Home Page
+<div class="list-group" style="width: 20rem; margin:0 auto;">
+  <a href="/one_click_landing" class="list-group-item text-center list-group-item-action">One-Click Recs</a>
+  <a href="/song_based" class="list-group-item text-center list-group-item-action">Favorite Song Based Recommender</a>
+  <a href="/artist_based" class="list-group-item text-center list-group-item-action">Artist Based Recommender</a>
+  <a href="/playlists" class="list-group-item text-center list-group-item-action">Your Playlists</a>
+  <a href="/top_tracks" class="list-group-item text-center list-group-item-action">Your Top Tracks</a>
+  <a href="#" class="list-group-item text-center list-group-item-action disabled" tabindex="-1" aria-disabled="true">Playlist Based Recommender</a>
+</div>
+-->
+    {% endblock %}
