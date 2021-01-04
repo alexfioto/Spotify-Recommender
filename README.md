@@ -28,7 +28,7 @@ Can we improve upon Spotify's base recommendations by directly comparing recomme
 
 ## Executive Summary
 
-Alexaurus Recs is an app that includes a suite of recommendation engines to hopes to improve upon Spo 
+Alexaurus Recs is an app that includes a suite of recommendation engines to hopes to improve upon Spotify's base recommendations. The app uses a Flask web-app framework and is deployed on heroku. See the source code [here](./App Source Code)
 
 
 ## Overview
