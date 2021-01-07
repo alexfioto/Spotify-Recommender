@@ -7,19 +7,16 @@
     <blockquote class="blockquote">
       <br>
       <div class="alert alert-success alert-dismissible fade show" role="alert">
-        <strong>Awesome!</strong> You just created a playlist. <a href="{{ url }}" target="_blank" class="alert-link">Click here</a> to view in the Spotify browser
+        You just created a playlist. <a href="{{ url }}" target="_blank" class="alert-link">Click here</a> to view in the Spotify browser
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
       </div>
       <h1>Your playlist is called</h1>
-      <h2> "{{playlist_name}}"</h2>
-      <br>    
-      <p>It's saved to your Spotify account but feel free to listen here.</p> 
-      <br>
+      <h2>"{{playlist_name}}"</h2> 
+      <h3><br>{{response}}<br></h3>
     </blockquote>
     <iframe src="{{ url }}" width="300" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
     <p>
-        <br>
-        <h4>I hope you like the songs!</h4>
+        <h4>Your playlist is saved to your Spotify account but feel free to listen here.<br>I hope you like the songs!<br></h4>
     </p>
 
 </figure>

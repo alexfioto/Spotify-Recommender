@@ -1,42 +1,17 @@
-"""
-Prerequisites
-    pip3 install spotipy Flask Flask-Session
-    // from your [app settings](https://developer.spotify.com/dashboard/applications)
-    export SPOTIPY_CLIENT_ID=client_id_here
-    export SPOTIPY_CLIENT_SECRET=client_secret_here
-    export SPOTIPY_REDIRECT_URI='http://127.0.0.1:8080' // must contain a port
-    // SPOTIPY_REDIRECT_URI must be added to your [app settings](https://developer.spotify.com/dashboard/applications)
-    OPTIONAL
-    // in development environment for debug output
-    export FLASK_ENV=development
-    // so that you can invoke the app outside of the file's directory include
-    export FLASK_APP=/path/to/spotipy/examples/app.py
- 
-    // on Windows, use `SET` instead of `export`
-Run app.py
-    python3 -m flask run --port=8080
-    NOTE: If receiving "port already in use" error, try other ports: 5000, 8090, 8888, etc...
-        (will need to be updated in your Spotify app and SPOTIPY_REDIRECT_URI variable)
-"""
-
-
 import os
 from flask import Flask, session, request, redirect, render_template, jsonify, url_for
 from flask_session import Session
 import spotipy
 import uuid
 import pandas as pd
-from rec_functions import get_artist_tracks, get_user_tracks, compare_songs, user_tracks_dataframe, get_playlist_embeddings, get_current_track_embed_link, album_art_url, parse_spotify_link, recommend_songs, playlist_url, make_playlist, one_click_rec, spotify_uri_search
+from rec_functions import get_artist_tracks, get_user_tracks, compare_songs, user_tracks_dataframe, get_playlist_embeddings, get_current_track_embed_link, album_art_url, parse_spotify_link, recommend_songs, playlist_url, make_playlist, one_click_rec, spotify_uri_search, artist_based_recs
 from sklearn.metrics.pairwise import pairwise_distances, cosine_distances, cosine_similarity
 pd.set_option("display.precision", 14)
 
-CLIENT_ID=''
-CLIENT_SECRET=''
+CLIENT_ID='472796d4b7904eb8ab972808d46bd0b0'
+CLIENT_SECRET='cc89036aabd04a61a9d20970a0510186'
 REDIRECT_URI='https://alexaurusrecs.herokuapp.com/'
-LOCAL_REDIRECT_URI='http://127.0.0.1:8080'
-modify_playlist = 'playlist-modify-public'
-user_auth = 'user-top-read'
-
+SCOPE = 'user-read-currently-playing playlist-modify-public user-top-read playlist-read-private'
 
 
 app = Flask(__name__)
@@ -53,9 +28,6 @@ def session_cache_path():
     return caches_folder + session.get('uuid')
 
 
-
-
-
 @app.route('/')
 def index():
     if not session.get('uuid'):
@@ -65,7 +37,7 @@ def index():
     auth_manager = spotipy.oauth2.SpotifyOAuth(client_id=CLIENT_ID,
                                                client_secret=CLIENT_SECRET,
                                                redirect_uri=REDIRECT_URI,
-                                               scope='user-read-currently-playing playlist-modify-public user-top-read playlist-read-private',
+                                               scope=SCOPE,
                                                cache_path=session_cache_path(), 
                                                show_dialog=True)
 
@@ -84,15 +56,9 @@ def index():
     return render_template('home.html', spotify=spotify)
 
 
-
-
-
 @app.route('/about')
 def about():
     return render_template('about.html')
-
-
-
 
 
 @app.route('/playlists')
@@ -109,9 +75,6 @@ def playlists():
     embed_links = get_playlist_embeddings(spotify)
 
     return render_template('playlist.html', embed_links=embed_links)          
-
-
-
 
 
 @app.route('/currently_playing')
@@ -133,9 +96,6 @@ def currently_playing():
         return render_template('no_current_track.html')
 
 
-
-
-
 @app.route('/top_tracks')
 def top_tracks():
     auth_manager = spotipy.oauth2.SpotifyOAuth(
@@ -146,14 +106,10 @@ def top_tracks():
     if not auth_manager.get_cached_token():
         return redirect('/')
     spotify = spotipy.Spotify(auth_manager=auth_manager)
-    df = user_tracks_dataframe(spotify)
+    df = user_tracks_dataframe(spotify, limit=50)
     #html = df.to_html
     #return html
     return render_template('top_tracks.html', df=df)
-
-
-
-
 
 
 @app.route('/song_based')
@@ -196,7 +152,17 @@ def song_based_submit():
     playlist_name = user_input['playlist_name']
 
 
-    playlist_uris = recommend_songs(spotify, listener_based=listener_based, genres=[genre], tracks=[uri], n_tracks=n_tracks, time_range=time_range)
+    playlist_uris, history = recommend_songs(spotify, listener_based=listener_based, genres=[genre], tracks=[uri], n_tracks=n_tracks, user_time_range=time_range)
+    
+    if not history['listener_based']:
+        response = 'Awesome!'
+    elif history['no_listening_history']:
+        response = "It looks like you have no listening history. Since we couldn\'t base our recs off your taste, we created a playlist of the artist top songs."
+    elif history['insufficient_history']:
+        response = f"You had insufficient {time_range.replace('_', ' ')} listening history. So we had to look into your others. We hope you don\'t mind"
+    else:
+        response = 'Awesome!'
+    
     user = spotify.current_user()['id']
     playlist = spotify.user_playlist_create(user=user, name=playlist_name, public=True)
     playlist_id = playlist['id']
@@ -207,15 +173,13 @@ def song_based_submit():
     #make_playlist(spotify, playlist_uris, playlist_name)
     url = playlist_url(playlist_id)
 
-    return render_template('song_based_submit.html', playlist_name=playlist_name, url=url)
-
-
-
+    return render_template('song_based_submit.html', playlist_name=playlist_name, url=url, response=response)
 
 
 @app.route('/artist_based')
 def artist_based():
     return render_template('artist_based.html')
+
 
 @app.route('/artist_based_submit')
 def artist_based_submit():
@@ -236,11 +200,15 @@ def artist_based_submit():
     artist_uri = parse_spotify_link(user_input['link'])
     time_range = user_input['time_range']
 
-    artist_df = get_artist_tracks(spotify, artists=[artist_uri])
+    playlist_uris, history = artist_based_recs(spotify, artists=[artist_uri], n_tracks=n_tracks, user_time_range=time_range)
 
-    user_df = get_user_tracks(spotify, limit=n_tracks, time_range=time_range)
 
-    playlist_uris = compare_songs(artist_df, user_df)
+    if history['no_listening_history']:
+        response = "It looks like you have no listening history. Since we couldn\'t base our recs off your taste, we created a playlist of the artist top songs."
+    elif history['insufficient_history']:
+        response = f"You had insufficient {time_range.replace('_', ' ')} listening history. So we had to look into your others. We hope you don\'t mind"
+    else:
+        response = 'Awesome!'
     
     playlist = spotify.user_playlist_create(user=user, name=playlist_name, public=True)
     playlist_id = playlist['id']
@@ -248,10 +216,8 @@ def artist_based_submit():
                                      playlist_id=playlist_id,
                                      tracks=playlist_uris)
     url = playlist_url(playlist_id)
-    return render_template('artist_based_submit.html', playlist_name=playlist_name, url=url)
+    return render_template('artist_based_submit.html', playlist_name=playlist_name, url=url, response=response)
     
-
-
 
 @app.route('/one_click_landing')
 def one_click_landing():
@@ -270,7 +236,12 @@ def one_click():
 
     spotify = spotipy.Spotify(auth_manager=auth_manager)
     playlist_name="Alexaurus Recs"
-    playlist_uris = one_click_rec(spotify)
+    playlist_uris, listening_history = one_click_rec(spotify)
+    if not listening_history:
+        response = "It looks like you have no listening history. Here are some editor's choices."
+    else:
+        response = "Awesome!"
+
     user = spotify.current_user()['id']
     playlist = spotify.user_playlist_create(user=user, name=playlist_name, public=True)
     playlist_id = playlist['id']
@@ -280,9 +251,7 @@ def one_click():
     
     url = playlist_url(playlist_id)
            
-    return render_template('one_click_recommender.html', playlist_name=playlist_name, url=url)
-
-
+    return render_template('one_click_recommender.html', playlist_name=playlist_name, response=response, url=url)
 
 
 @app.route('/spotify_code_search')
@@ -306,8 +275,9 @@ def spotify_code_search_result():
     media_type = user_input['type']
     search = user_input['search']
     results = spotify_uri_search(spotify, search=search, type=media_type)
+    columns = results.columns
 
-    return render_template('spotify_code_search_results.html', results=results, media_type=media_type)
+    return render_template('spotify_code_search_results.html', results=results, columns=columns)
 
 
 
@@ -326,12 +296,7 @@ def sign_out():
 
 
 
-
-
-
-
-
-
+######DEPRICATED######
 @app.route('/form')
 def form():
     return render_template('form.html')
@@ -412,21 +377,6 @@ def submit_artist_based():
             '''
 
 
-'''
-Following lines allow application to be run more conveniently with
-`python app.py` (Make sure you're using python3)
-(Also includes directive to leverage pythons threading capacity.)
-'''
+
 if __name__ == '__main__':
 	app.run(threaded=True, debug=True)
-
-
-# pipenv shell
-# pip install flask
-# pip install gunicorn
-# pip freeze > requirements.txt
-# delete pipfile.txt
-# create Procfile web: gunicorn app:app
-# create git repo...git init, git add ., git commit -m "praying this works"
-# heroku create my_new_deployment
-# git push heroku master
